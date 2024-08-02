@@ -12,7 +12,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Usa il server SMTP del tuo provi
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'cilindromagico2.0@gmail.com'  # Sostituisci con il tuo indirizzo email
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')  # Recupera la password dalla variabile d'ambiente
+app.config['MAIL_PASSWORD'] = 'Sabrina123'  # Recupera la password dalla variabile d'ambiente
 app.config['MAIL_DEFAULT_SENDER'] = 'cilindromagico2.0@gmail.com'  # Sostituisci con il tuo indirizzo email
 
 mail = Mail(app)
@@ -40,7 +40,7 @@ def add_location():
 
         # Invia un'email con le coordinate
         msg = Message("Nuova posizione condivisa",
-                      recipients=["destinatario@example.com"])  # Sostituisci con l'indirizzo email destinatario
+                      recipients=["cilindromagico2.0@gmail.com"])  # Sostituisci con l'indirizzo email destinatario
         msg.body = f"Latitudine: {latitude}, Longitudine: {longitude}"
         mail.send(msg)
 
