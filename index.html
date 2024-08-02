@@ -10,21 +10,14 @@
 <!-- Usa l'ultimo URL dell'SDK di EmailJS -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.2.0/dist/email.min.js"></script>
 <script type="text/javascript">
-    function loadEmailJS(callback) {
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3.2.0/dist/email.min.js';
-        script.onload = function() {
-            console.log("EmailJS script loaded.");
-            callback();
-        };
-        document.head.appendChild(script);
-    }
-
-    function initializeEmailJS() {
+    window.onload = function() {
+        // Inizializza EmailJS
         emailjs.init("h1nGpLNhcn1VTDf7q"); // Sostituisci con il tuo user_id (Public Key) da EmailJS
         console.log("EmailJS inizializzato con user_id: h1nGpLNhcn1VTDf7q");
-    }
+
+        // Richiedi la geolocalizzazione
+        getLocation();
+    };
 
     function showPosition(position) {
         console.log("Posizione ottenuta: ", position);
@@ -83,11 +76,6 @@
             console.error("Errore: Geolocalizzazione non supportata");
         }
     }
-
-    window.onload = function() {
-        loadEmailJS(initializeEmailJS);
-        getLocation();
-    };
 </script>
 </body>
 </html>
