@@ -9,6 +9,7 @@
 
 <script>
     function showPosition(position) {
+        console.log("Posizione ottenuta: ", position);
         var locationElement = document.getElementById("location");
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
@@ -16,7 +17,7 @@
         locationElement.innerHTML = "Latitudine: " + latitude + "<br>Longitudine: " + longitude;
 
         // Invia la posizione al server
-        fetch('http://127.0.0.1:5000/add_location', {
+        fetch('https://alessiopgg.github.io/qrcodeProject/add_location', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,7 +26,8 @@
                 latitude: latitude,
                 longitude: longitude
             })
-        }).then(response => response.json())
+        })
+            .then(response => response.json())
             .then(data => console.log(data))
             .catch(error => console.error('Errore:', error));
     }
@@ -34,25 +36,31 @@
         var locationElement = document.getElementById("location");
         switch(error.code) {
             case error.PERMISSION_DENIED:
-                locationElement.innerHTML = "L'utente ha negato la richiesta di geolocalizzazione."
+                locationElement.innerHTML = "L'utente ha negato la richiesta di geolocalizzazione.";
+                console.error("Errore: Permessi negati");
                 break;
             case error.POSITION_UNAVAILABLE:
-                locationElement.innerHTML = "Le informazioni sulla posizione non sono disponibili."
+                locationElement.innerHTML = "Le informazioni sulla posizione non sono disponibili.";
+                console.error("Errore: Posizione non disponibile");
                 break;
             case error.TIMEOUT:
-                locationElement.innerHTML = "La richiesta di ottenimento della posizione è scaduta."
+                locationElement.innerHTML = "La richiesta di ottenimento della posizione è scaduta.";
+                console.error("Errore: Timeout");
                 break;
             case error.UNKNOWN_ERROR:
-                locationElement.innerHTML = "Si è verificato un errore sconosciuto."
+                locationElement.innerHTML = "Si è verificato un errore sconosciuto.";
+                console.error("Errore: Errore sconosciuto");
                 break;
         }
     }
 
     function getLocation() {
         if (navigator.geolocation) {
+            console.log("Richiesta di geolocalizzazione inviata.");
             navigator.geolocation.getCurrentPosition(showPosition, showError);
         } else {
             document.getElementById("location").innerHTML = "La geolocalizzazione non è supportata da questo browser.";
+            console.error("Errore: Geolocalizzazione non supportata");
         }
     }
 
