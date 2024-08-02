@@ -32,8 +32,10 @@
         emailjs.send('service_ig15rg6', 'template_3bx3ri4', templateParams)
             .then(function(response) {
                 console.log('Email inviata correttamente!', response.status, response.text);
+                alert('Email inviata correttamente!');
             }, function(error) {
                 console.error('Errore nell\'invio dell\'email:', error);
+                alert('Errore nell\'invio dell\'email: ' + JSON.stringify(error));
             });
     }
 
