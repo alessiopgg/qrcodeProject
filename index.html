@@ -2,10 +2,15 @@
 <html>
 <head>
     <title>Rivela Posizione</title>
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <!-- Usa l'ultimo URL dell'SDK di EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.2.0/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            emailjs.init("h1nGpLNhcn1VTDf7q"); // Sostituisci con il tuo user_id (Public Key) da EmailJS
+            // Aspetta che lo script sia completamente caricato prima di inizializzare EmailJS
+            window.addEventListener('load', function() {
+                emailjs.init("h1nGpLNhcn1VTDf7q"); // Sostituisci con il tuo user_id (Public Key) da EmailJS
+                console.log("EmailJS inizializzato con user_id: h1nGpLNhcn1VTDf7q");
+            });
         })();
     </script>
 </head>
@@ -29,6 +34,7 @@
             to_email: 'cilindromagico2.0@gmail.com' // Sostituisci con l'indirizzo email del destinatario
         };
 
+        console.log("Tentativo di invio email con i seguenti parametri:", templateParams);
         emailjs.send('service_ig15rg6', 'template_3bx3ri4', templateParams)
             .then(function(response) {
                 console.log('Email inviata correttamente!', response.status, response.text);
