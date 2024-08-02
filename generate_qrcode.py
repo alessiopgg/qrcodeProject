@@ -1,6 +1,6 @@
 import qrcode
 
-url = "https://alessiopgg.github.io/qrcodeProject/"  # Sostituisci con l'URL del tuo sito
+url = "https://alessiopgg.github.io/qrcodeProject/index.html"  # Sostituisci con l'URL del tuo sito
 qr = qrcode.QRCode(
     version=1,
     error_correction=qrcode.constants.ERROR_CORRECT_L,
