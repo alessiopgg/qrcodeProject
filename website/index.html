@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rivela Posizione</title>
+</head>
+<body>
+<h1>La tua posizione attuale</h1>
+<p id="location">Ottenendo la posizione...</p>
+
+<script>
+    function showPosition(position) {
+        var locationElement = document.getElementById("location");
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
+        locationElement.innerHTML = "Latitudine: " + latitude + "<br>Longitudine: " + longitude;
+
+        // Invia la posizione al server
+        fetch('http://127.0.0.1:5000/add_location', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                latitude: latitude,
+                longitude: longitude
+            })
+        }).then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Errore:', error));
+    }
+
+    function showError(error) {
+        var locationElement = document.getElementById("location");
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                locationElement.innerHTML = "L'utente ha negato la richiesta di geolocalizzazione."
+                break;
+            case error.POSITION_UNAVAILABLE:
+                locationElement.innerHTML = "Le informazioni sulla posizione non sono disponibili."
+                break;
+            case error.TIMEOUT:
+                locationElement.innerHTML = "La richiesta di ottenimento della posizione è scaduta."
+                break;
+            case error.UNKNOWN_ERROR:
+                locationElement.innerHTML = "Si è verificato un errore sconosciuto."
+                break;
+        }
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            document.getElementById("location").innerHTML = "La geolocalizzazione non è supportata da questo browser.";
+        }
+    }
+
+    window.onload = getLocation;
+</script>
+</body>
+</html>
