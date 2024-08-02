@@ -8,10 +8,6 @@
 <p id="location">Ottenendo la posizione...</p>
 
 <script>
-    function isIOS() {
-        return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    }
-
     function showPosition(position) {
         console.log("Posizione ottenuta: ", position);
         var locationElement = document.getElementById("location");
@@ -40,7 +36,7 @@
         var locationElement = document.getElementById("location");
         switch(error.code) {
             case error.PERMISSION_DENIED:
-                locationElement.innerHTML = "L'utente ha negato la richiesta di geolocalizzazione. Se stai utilizzando Safari su iPhone, vai in Impostazioni > Safari > Posizione e consenti l'accesso.";
+                locationElement.innerHTML = "L'utente ha negato la richiesta di geolocalizzazione.";
                 console.error("Errore: Permessi negati");
                 break;
             case error.POSITION_UNAVAILABLE:
@@ -68,12 +64,7 @@
         }
     }
 
-    window.onload = function() {
-        if (isIOS()) {
-            alert("Se stai usando Safari su iPhone, assicurati che i permessi di geolocalizzazione siano abilitati in Impostazioni > Safari > Posizione.");
-        }
-        getLocation();
-    };
+    window.onload = getLocation;
 </script>
 </body>
 </html>
