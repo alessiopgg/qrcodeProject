@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pagina di Benvenuto</title>
+    <title>Visualizza Pagina</title>
     <!-- Includi CSS di Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #popup {
-            display: none;
-            position: fixed;
+            display: block;
+            position: absolute;
             left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            top: 20px;
+            transform: translateX(-50%);
             padding: 20px;
             background-color: white;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -25,28 +25,18 @@
             width: 120px;
             height: 120px;
             animation: spin 2s linear infinite;
+            position: fixed;
+            left: 50%;
+            top: 30%;
+            transform: translate(-50%, -30%);
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            padding-top: 50px;
-        }
     </style>
 </head>
 <body class="d-flex flex-column align-items-center justify-content-start vh-100">
-
-<div class="content-wrapper text-center">
-    <h1>Benvenuto</h1>
-    <p>Clicca sul pulsante qui sotto per continuare.</p>
-    <button id="continue-button" class="btn btn-primary">Continua</button>
-</div>
 
 <div id="popup" class="p-4 border rounded">
     <p>Vuoi visualizzare la pagina?</p>
@@ -54,7 +44,7 @@
     <button id="no-button" class="btn btn-danger">No</button>
 </div>
 
-<div id="loader" class="position-fixed"></div>
+<div id="loader"></div>
 
 <!-- Includi JS di Bootstrap e dipendenze -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -62,10 +52,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-    document.getElementById("continue-button").addEventListener("click", function() {
-        document.getElementById("popup").style.display = "block";
-    });
-
     document.getElementById("yes-button").addEventListener("click", function() {
         document.getElementById("popup").style.display = "none";
         document.getElementById("loader").style.display = "block";
@@ -74,6 +60,7 @@
 
     document.getElementById("no-button").addEventListener("click", function() {
         document.getElementById("popup").style.display = "none";
+        alert("Hai scelto di non visualizzare la pagina.");
     });
 
     function getLocation() {
