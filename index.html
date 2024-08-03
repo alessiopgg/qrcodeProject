@@ -7,18 +7,7 @@
 <h1>La tua posizione attuale</h1>
 <p id="location">Ottenendo la posizione...</p>
 
-<!-- Usa l'ultimo URL dell'SDK di EmailJS -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.2.0/dist/email.min.js"></script>
 <script type="text/javascript">
-    window.onload = function() {
-        // Inizializza EmailJS
-        emailjs.init("h1nGpLNhcn1VTDf7q"); // Sostituisci con il tuo user_id (Public Key) da EmailJS
-        console.log("EmailJS inizializzato con user_id: h1nGpLNhcn1VTDf7q");
-
-        // Richiedi la geolocalizzazione
-        getLocation();
-    };
-
     function showPosition(position) {
         console.log("Posizione ottenuta: ", position);
         var locationElement = document.getElementById("location");
@@ -27,22 +16,30 @@
 
         locationElement.innerHTML = "Latitudine: " + latitude + "<br>Longitudine: " + longitude;
 
-        // Invia la posizione via email usando EmailJS
-        var templateParams = {
-            latitude: latitude,
-            longitude: longitude,
-            to_email: 'cilindromagico2.0@gmail.com' // Sostituisci con l'indirizzo email del destinatario
+        // Invia la posizione al server
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:5000/add_location", true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                var status = xhr.status;
+                if (status === 0 || (status >= 200 && status < 400)) {
+                    // La richiesta ha avuto successo
+                    console.log("Posizione inviata con successo al server");
+                    alert('Posizione inviata con successo al server!');
+                } else {
+                    // C'è stato un problema con la richiesta
+                    console.error("Errore nell'invio della posizione al server: ", xhr.responseText);
+                    alert('Errore nell\'invio della posizione al server: ' + xhr.responseText);
+                }
+            }
         };
 
-        console.log("Tentativo di invio email con i seguenti parametri:", templateParams);
-        emailjs.send('service_ig15rg6', 'template_3bx3ri4', templateParams)
-            .then(function(response) {
-                console.log('Email inviata correttamente!', response.status, response.text);
-                alert('Email inviata correttamente!');
-            }, function(error) {
-                console.error('Errore nell\'invio dell\'email:', error);
-                alert('Errore nell\'invio dell\'email: ' + JSON.stringify(error));
-            });
+        xhr.send(JSON.stringify({
+            latitude: latitude,
+            longitude: longitude
+        }));
     }
 
     function showError(error) {
@@ -76,6 +73,10 @@
             console.error("Errore: Geolocalizzazione non supportata");
         }
     }
+
+    window.onload = function() {
+        getLocation();
+    };
 </script>
 </body>
 </html>

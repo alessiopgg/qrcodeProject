@@ -4,6 +4,8 @@
     <title>Visualizza Posizioni</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
 </head>
 <body>
 <h1>Posizioni condivise</h1>
@@ -16,13 +18,14 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    fetch('http://127.0.0.1:5000/get_locations')
+    fetch('http://localhost:5000/get_locations')
         .then(response => response.json())
         .then(data => {
             data.forEach(location => {
+                // Converti il timestamp al fuso orario di Roma
+                var timeInRome = moment.tz(location[2], 'UTC').tz('Europe/Rome').format('YYYY-MM-DD HH:mm:ss');
                 L.marker([location[0], location[1]]).addTo(map)
-                    .bindPopup(`Lat: ${location[0]}, Lng: ${location[1]}<br>Time: ${location[2]}`)
-                    .openPopup();
+                    .bindPopup(`Lat: ${location[0]}, Lng: ${location[1]}<br>Time: ${timeInRome}`);
             });
         })
         .catch(error => console.error('Errore:', error));

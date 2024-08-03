@@ -1,45 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Visualizza Coordinate</title>
+    <title>Coordinate Raccolte</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
 </head>
 <body>
-<h1>Coordinate Condivise</h1>
-<div id="coordinates">
-    <p>Ottenendo le coordinate...</p>
-</div>
+<h1>Coordinate Raccolte</h1>
+<table id="coordinates-table" border="1">
+    <tr>
+        <th>Latitudine</th>
+        <th>Longitudine</th>
+        <th>Timestamp</th>
+    </tr>
+</table>
 
 <script>
-    function fetchCoordinates() {
-        fetch('http://127.0.0.1:5000/get_locations')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                var coordinatesDiv = document.getElementById('coordinates');
-                coordinatesDiv.innerHTML = ''; // Pulisce il contenuto precedente
-
-                if (data.length === 0) {
-                    coordinatesDiv.innerHTML = '<p>Nessuna coordinata trovata.</p>';
-                } else {
-                    data.forEach(location => {
-                        var p = document.createElement('p');
-                        p.innerHTML = `Lat: ${location[0]}, Lng: ${location[1]}, Time: ${location[2]}`;
-                        coordinatesDiv.appendChild(p);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Errore:', error);
-                var coordinatesDiv = document.getElementById('coordinates');
-                coordinatesDiv.innerHTML = '<p>Errore nel caricamento delle coordinate.</p>';
+    fetch('http://localhost:5000/get_locations')
+        .then(response => response.json())
+        .then(data => {
+            var table = document.getElementById("coordinates-table");
+            data.forEach(location => {
+                var row = table.insertRow();
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                // Converti il timestamp al fuso orario di Roma
+                var timeInRome = moment.tz(location[2], 'UTC').tz('Europe/Rome').format('YYYY-MM-DD HH:mm:ss');
+                cell1.innerHTML = location[0];
+                cell2.innerHTML = location[1];
+                cell3.innerHTML = timeInRome;
             });
-    }
-
-    window.onload = fetchCoordinates;
+        })
+        .catch(error => console.error('Errore:', error));
 </script>
 </body>
 </html>

@@ -1,22 +1,10 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_mail import Mail, Message
 import sqlite3
-import os
 
 app = Flask(__name__)
 CORS(app)
-
-# Configurazione di Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'cilindromagico2.0@gmail.com'
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = 'cilindromagico2.0@gmail.com'
-
-mail = Mail(app)
 
 def init_db():
     conn = sqlite3.connect('locations.db')
@@ -38,21 +26,9 @@ def add_location():
         c.execute("INSERT INTO locations (latitude, longitude) VALUES (?, ?)", (latitude, longitude))
         conn.commit()
         conn.close()
-
-        try:
-            # Invia un'email con le coordinate
-            msg = Message("Nuova posizione condivisa",
-                          recipients=["cilindromagico2.0@gmail.com"])
-            msg.body = f"Latitudine: {latitude}, Longitudine: {longitude}"
-            mail.send(msg)
-            print("Email inviata correttamente")
-        except Exception as e:
-            print(f"Errore nell'invio dell'email: {e}")
-            return jsonify({'status': 'error', 'message': str(e)}), 500
-
         return jsonify({'status': 'success'}), 200
     else:
-        return jsonify({'status': 'error', 'message': 'Invalid data'}), 400
+        return jsonify({'status': 'error', 'message': 'Dati non validi'}), 400
 
 @app.route('/get_locations', methods=['GET'])
 def get_locations():
